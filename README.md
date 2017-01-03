@@ -15,7 +15,7 @@ This might look something like -
 
 ```PHP
 	<?php
-	require("/www/assets/safer-php/safer.php");
+	require("/usr/local/apache2/htdocs/safer.php");
 	$get = safer($_GET); 
 	$post = safer($_POST);
 	
@@ -50,7 +50,7 @@ defined the validation map and then use it with your code.
 	// Just some place holder code to indicate that you've already established a MySQL connection
 	openMySQLConnection();
 
-	require("/www/assets/safer-php/safer.php");
+	require("/usr/local/apache2/htdocs/safer-php/safer.php");
 	
 	// Make a validation map
 	$validation_map = array(
