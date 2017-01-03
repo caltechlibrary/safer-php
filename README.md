@@ -9,13 +9,13 @@ enough or appropriate validation and this leads to potential injection
 problems (XSS and SQL).  To mitigate this you need to do three things
 
 * At the start of the PHP file require safer.php
-* Before PHP code is executed then run safer($_GET), safer($_POST), and safeSERVER() as needed.
+* Before PHP code is executed then run safer($_GET), safer($_POST), and safer($_SERVER) as needed.
 
 This might look something like -
 
 ```PHP
 	<?php
-	require("/usr/local/apache2/htdocs/safer.php");
+	require("../safer-php/safer.php");
 	$get = safer($_GET); 
 	$post = safer($_POST);
 	
