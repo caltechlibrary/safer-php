@@ -3,17 +3,19 @@
  * This is an example of an old feedback form retrofitted with safer.php
  ********************************************************************************/
 require('../safer.php');
-// Form uses $_SERVER, $_SESSION and $_POST, setup safer copies.
-$form_map = array(
-   "name" => "Text",
-   "email" => "EMail",
-   "comments" => "Text",
-);
+// Form uses $_SERVER, $_SESSION and $_POST, setup safer copy of $_POST.
 $_post = array();
 if (isset($_POST)) {
-    $post = safer($_POST);//, $form_map, true);
+    $_post = safer($_POST, array(
+        "name" => "text",
+        "email" => "email",
+        "validator" => "text",
+        "comments" => "text",
+        "submitted" => "text",
+    ));
 }
 // In this rest of this file rename $_POST to safer $_post
+// Commented out mail() function since this is a demo.
 /** REST of form is the same as before **/
 ?>
 <?php 
@@ -75,27 +77,27 @@ td p{ margin-top: 0px;}
 
 	<!-- online feedback form -->
 	<?php session_start(); ?>
-	<?php if ( $_POST['submitted'] == 'true' && empty($_POST['name']) ): ?>
+	<?php if ( $_post['submitted'] == 'true' && empty($_post['name']) ): ?>
 	<p><font color="#FF0000">Missing Your Name</font></p>    <?php endif; ?>
-    <?php if ( $_POST['submitted'] == 'true' && empty($_POST['email']) ): ?>
+    <?php if ( $_post['submitted'] == 'true' && empty($_post['email']) ): ?>
     <p><font color="#FF0000">Missing Your E-Mail Address</font></p>   <?php endif; ?>
 	
-    <?php if ( $_POST['submitted'] == 'true' && empty($_POST['validator']) ): ?>
+    <?php if ( $_post['submitted'] == 'true' && empty($_post['validator']) ): ?>
     <p><font color="#FF0000">Missing security code</font></p>   <?php endif; ?>
-    <?php if ( $_POST['submitted'] == 'true' && $_POST['email'] <> '' && (checkEmail($_POST['email']) == FALSE)): ?> 
+    <?php if ( $_post['submitted'] == 'true' && $_post['email'] <> '' && (checkEmail($_post['email']) == FALSE)): ?> 
 	<p><font color="#FF0000">E-mail entered is not valid.</font></p>  <?php endif; ?>
 
-    <?php if ($_POST['submitted']== 'true' && $_POST['validator'] <> '' && $_POST['validator'] <> $_SESSION['IMAGE_CODE']): ?>
+    <?php if ($_post['submitted']== 'true' && $_post['validator'] <> '' && $_post['validator'] <> $_SESSION['IMAGE_CODE']): ?>
     <p><font color="#FF0000">Invalid security code.</font></p> 
 	
 	<?php // for testing 
-	//echo "validator = ", $_POST['validator'], "\n"; 
+	//echo "validator = ", $_post['validator'], "\n"; 
 	//echo " IMAGE_CODE = ", $_SESSION['IMAGE_CODE'];
 	?>
     <?php endif; ?>
 
-    <?php if ( $_POST['submitted'] <> 'true' || empty($_POST['name']) || empty($_POST['email']) || 
-	checkEmail($_POST['email'])== FALSE || empty($_POST['validator']) || $_POST['validator'] <> $_SESSION['IMAGE_CODE']): ?>
+    <?php if ( $_post['submitted'] <> 'true' || empty($_post['name']) || empty($_post['email']) || 
+	checkEmail($_post['email'])== FALSE || empty($_post['validator']) || $_post['validator'] <> $_SESSION['IMAGE_CODE']): ?>
    
  <!-- <p> (<span class="redasterisk"> *</span>) Denotes a Required Field.<p/> -->
   <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="form_fields">
@@ -108,7 +110,7 @@ td p{ margin-top: 0px;}
       <input name="email" size="45" value="<?php echo $_post['email']; ?>" />
   </p>
   <p>
-    <input name="copy" type="checkbox" value="copy" <?php if ( $_POST['copy']== "copy" ) { echo "checked" ;} ?> /> 
+    <input name="copy" type="checkbox" value="copy" <?php if ( $_post['copy']== "copy" ) { echo "checked" ;} ?> /> 
     Send me a copy of this email
   </p>
 <p>Please enter these characters 
@@ -134,10 +136,10 @@ td p{ margin-top: 0px;}
       <?php endif; ?>
 
 <?php 
-if ( $_POST['submitted'] == 'true' && !empty($_POST['validator']) && $_POST['validator'] == $_SESSION['IMAGE_CODE']
-	&& $_POST['name'] <> '' && $_POST['email'] <> '' && checkEmail($_POST['email'])<> FALSE)
+if ( $_post['submitted'] == 'true' && !empty($_post['validator']) && $_post['validator'] == $_SESSION['IMAGE_CODE']
+	&& $_post['name'] <> '' && $_post['email'] <> '' && checkEmail($_post['email'])<> FALSE)
 {
-   define ("NL", "<BR />\n");
+   define (NL, "<BR />\n");
 	echo ("<h4>Your feedback has been submitted.</h4>\n");
 
     unset($_SESSION['IMAGE_CODE']); //**************************************
@@ -162,10 +164,9 @@ if ( $_POST['submitted'] == 'true' && !empty($_POST['validator']) && $_POST['val
 	$output .= "Comments: " . "\n". $_post['comments']. "\n";
 	$bcc = "kbuxton@library.caltech.edu,";
 	if ( $_post['copy']== "copy" ) { $bcc .= $_post['email']; }
-//mail("library@caltech.edu ", "Caltech Library Services Mobile Feedback", $output, "From: ".$_post['email']."\r\n"."Bcc: ".$bcc."\r\n");
+//DEBUG, turn off: mail("library@caltech.edu ", "Caltech Library Services Mobile Feedback", $output, "From: ".$_post['email']."\r\n"."Bcc: ".$bcc."\r\n");
 
 }
-echo "DEBUG _post -> _POST:<pre> " . json_encode($_post) . "\n" . json_encode($_POST) . "</pre>". PHP_EOL;
 ?>
 <!-- end online contact form -->
 
