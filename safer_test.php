@@ -954,6 +954,56 @@ function testSaneUnicodeSupportPCRE()
     return "OK";
 }
 
+function testServerAssociativeArray() 
+{
+    global $assert;
+
+    // Example Server associative array
+    $_SERVER = array(
+        "SCRIPT_URL" => "/m/feedback-fixing.php",
+        "SCRIPT_URI" => "http://library.caltech.edu/m/feedback-fixing.php",
+        "HTTP_HOST" => "library.caltech.edu",
+        "HTTP_CONNECTION" => "keep-alive",
+        "CONTENT_LENGTH" => "48",
+        "HTTP_CACHE_CONTROL" => "max-age=0",
+        "HTTP_ORIGIN" => "http://library.caltech.edu",
+        "HTTP_UPGRADE_INSECURE_REQUESTS" => "1",
+        "HTTP_USER_AGENT" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36",
+        "CONTENT_TYPE" => "application/x-www-form-urlencoded",
+        "HTTP_ACCEPT" => "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "HTTP_REFERER" => "http://library.caltech.edu/m/feedback-fixing.php",
+        "HTTP_ACCEPT_ENCODING" => "gzip, deflate",
+        "HTTP_ACCEPT_LANGUAGE" => "en-US,en;q=0.8",
+        "HTTP_COOKIE" => "__unam=27ba962-158887ada2a-1c500158-8; PHPSESSID=8rbs9blf9an0le5nsvbmpmk4t2; _ga=GA1.2.1705274370.1472593962",
+        "PATH" => "/usr/bin:/bin",
+        "SERVER_SIGNATURE" => "",
+        "SERVER_SOFTWARE" => "Apache/2.2.19 (Unix) mod_ssl/2.2.19 OpenSSL/1.0.0d PHP/5.3.6",
+        "SERVER_NAME" => "library.caltech.edu",
+        "SERVER_ADDR" => "131.215.225.1",
+        "SERVER_PORT" => "80",
+        "REMOTE_ADDR" => "131.215.226.25",
+        "DOCUMENT_ROOT" => "/usr/local/apache2/htdocs",
+        "SERVER_ADMIN" => "websters@library.caltech.edu",
+        "SCRIPT_FILENAME" => "/usr/local/apache2/htdocs/m/feedback-fixing.php",
+        "REMOTE_PORT" => "58240",
+        "GATEWAY_INTERFACE" => "CGI/1.1",
+        "SERVER_PROTOCOL" => "HTTP/1.1",
+        "REQUEST_METHOD" => "POST",
+        "QUERY_STRING" => "",
+        "REQUEST_URI" => "/m/feedback-fixing.php",
+        "SCRIPT_NAME" => "/m/feedback-fixing.php",
+        "PHP_SELF" => "/m/feedback-fixing.php",
+        "REQUEST_TIME" => 1483475849,
+    );
+
+    //  First check using the default map
+    $server = safer($_SERVER);
+    foreach ($_SERVER as $key => $value) {
+        $assert->equal($server[$key], $value, "$key should be $value, got " . $server[$key]);
+    }
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -961,6 +1011,7 @@ $assert->ok(function_exists("safer"), "Should have a safer function defined.");
 $assert->ok(function_exists("saferJSON"), "Should have a saferJSON function defined.");
 $assert->ok(function_exists("saferFilename"), "Should have a saferFilename");
 
+echo "\tTesting testServerAssociativeArray: " .  testServerAssociativeArray() . PHP_EOL;
 echo "\tTesting testIsFilename: " . testIsFilename() . PHP_EOL;
 echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;

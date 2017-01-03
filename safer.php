@@ -403,12 +403,14 @@ function safer($raw_map, $validation_map = null, $verbose = false)
         // Code needs to supply a validation map.
         $validation_map = defaultValidationMap($raw_map, true);
     }
-    foreach($validation_map as $key => $format) {
-        // Since RESTful style allows dashes in the URLs we should support
-        // that in GET args.
-        $key = makeAs($key, "varname_dash", $verbose);
-        if (isset($raw_map[$key])) {
-            $results[$key] = makeAs($raw_map[$key], $format, $verbose);
+    if ($validation_map !== null) {
+        foreach($validation_map as $key => $format) {
+            // Since RESTful style allows dashes in the URLs we should support
+            // that in GET args.
+            $key = makeAs($key, "varname_dash", $verbose);
+            if (isset($raw_map[$key])) {
+                $results[$key] = makeAs($raw_map[$key], $format, $verbose);
+            }
         }
     }
     return $results;
