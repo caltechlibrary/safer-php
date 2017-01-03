@@ -9,6 +9,13 @@ BRANCH = $(shell git branch | grep '* ' | cut -d\  -f 2)
 
 DIST_DIR = $(PROJECT)-$(VERSION)
 
+build:
+	php -l safer.php
+	php -l safer_test.php
+
+test:
+	php safer_test.php
+
 save:
 	git commit -am "Quick Save"
 	git push origin $(BRANCH)
