@@ -1,7 +1,8 @@
 <?php 
-/********************************************************************************
- * This is an example of an old feedback form retrofitted with safer.php
- ********************************************************************************/
+/******************************************************************************************
+ * This is an example of an old feedback form retrofitted with safer.php on Jan 3, 2017
+ * Previously version had not been modified since Feb 4, 2011
+ ******************************************************************************************/
 require('../safer.php');
 // Form uses $_SERVER, $_SESSION and $_POST, setup safer copy of $_POST.
 $_post = array();
@@ -13,9 +14,15 @@ if (isset($_POST)) {
         "comments" => "text",
         "submitted" => "text",
     ));
+    // Cleanup the new lines for display and sending
+    if (isset($_post["comments"])) {
+        $_post["comments"] = str_replace("\\r\\n", "\n\r", $_post["comments"]);
+    }
 }
+// mail() disabled as this is a demo...
 // In this rest of this file rename $_POST to safer $_post
-// Commented out mail() function since this is a demo.
+// Added quotes around define(NL...
+// Added $send_to for ease of testing fix.
 /** REST of form is the same as before **/
 ?>
 <?php 
@@ -139,7 +146,7 @@ td p{ margin-top: 0px;}
 if ( $_post['submitted'] == 'true' && !empty($_post['validator']) && $_post['validator'] == $_SESSION['IMAGE_CODE']
 	&& $_post['name'] <> '' && $_post['email'] <> '' && checkEmail($_post['email'])<> FALSE)
 {
-   define (NL, "<BR />\n");
+   define ('NL', "<BR />\n");
 	echo ("<h4>Your feedback has been submitted.</h4>\n");
 
     unset($_SESSION['IMAGE_CODE']); //**************************************
@@ -150,7 +157,7 @@ if ( $_post['submitted'] == 'true' && !empty($_post['validator']) && $_post['val
 	echo ("Time: " . $timestamp . NL);
 	echo ("Name: " . $_post['name'] . NL);
 	echo ("Email: " . $_post['email'] . NL);
-	echo ("Comments: <br><pre>" . $_post['comments'] . NL);
+	echo ("Comments: <pre>" . $_post['comments'] . NL);
 	echo ("</pre></p><p>");
 	echo ('<a href="/m"> Mobile home</a>');
         echo ("</P></blockquote>");
@@ -162,10 +169,10 @@ if ( $_post['submitted'] == 'true' && !empty($_post['validator']) && $_post['val
 	$output .= "Email: " . $_post['email']. "\n";
 	$output .= "URL: " . $_post['url']. "\n";
 	$output .= "Comments: " . "\n". $_post['comments']. "\n";
+    $send_to = "library@caltech.edu ";
 	$bcc = "kbuxton@library.caltech.edu,";
 	if ( $_post['copy']== "copy" ) { $bcc .= $_post['email']; }
-//DEBUG, turn off: mail("library@caltech.edu ", "Caltech Library Services Mobile Feedback", $output, "From: ".$_post['email']."\r\n"."Bcc: ".$bcc."\r\n");
-
+    //DEBUG, disabled for demo: mail($send_to, "Caltech Library Services Mobile Feedback", $output, "From: ".$_post['email']."\r\n"."Bcc: ".$bcc."\r\n");
 }
 ?>
 <!-- end online contact form -->
