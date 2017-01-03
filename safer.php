@@ -29,13 +29,16 @@ if (defined("SAFER_ALLOWED_HTML") === false) {
 }
 
 /**
- * utf2html - convert UTF-8 characters to appropriate HTML entities.
+ * utf2html - convert UTF-8 characters to appropriate HTML entities if mb_encode_numericentity() defined.
  * Take from the comments at http://us1.php.net/manual/en/function.mb-encode-numericentity.php
  * by dan@boxuk.com.
  * @param $utf2html_string - the string to convert.
  * @return the converted string.
  */
 function utf2html($utf2html_string, $is_hex = false) {
+    if (! function_exists("mb_encode_numericentity")) {
+        return $utf2html_string;
+    }
     $f = 0xffff;
     $convmap = array(
         /* <!ENTITY % HTMLlat1 PUBLIC "-//W3C//ENTITIES Latin 1//EN//HTML">
@@ -124,7 +127,8 @@ function isValidUrl($s, $protocols = null)
  */
 function isValidFilename($s) 
 {
-    if (!preg_match('/^(?:[a-z0-9_-]|\/|\.(?!\.))+$/iD', $s) || mb_strlen($s, "UTF-8") >= 250) {
+    if (!preg_match('/^(?:[a-z0-9_-]|\/|\.(?!\.))+$/iD', $s) || 
+            (function_exists("mb_strlen") && mb_strlen($s, "UTF-8") >= 250)) {
         return false;
     }
     return true;
@@ -252,13 +256,15 @@ function fix_html_quotes($s)
  */
 function escape($value) 
 {
-    // Handle multi-byte issues by converting to UTF-8
-    // if needed.
-    $from_encoding = mb_detect_encoding($value);
-    if ($from_encoding === false) {
-        die("character encoding detection failed!");
-    } else if ($from_encoding !== "UTF-8") {
-        $value = mb_convert_encoding($value, "UTF-8", $from_encoding);
+    if (function_exists("mb_detect_encoding") && function_exists("mb_convert_encoding")) {
+        // Handle multi-byte issues by converting to UTF-8
+        // if needed.
+        $from_encoding = mb_detect_encoding($value);
+        if ($from_encoding === false) {
+            die("character encoding detection failed!");
+        } else if ($from_encoding !== "UTF-8") {
+            $value = mb_convert_encoding($value, "UTF-8", $from_encoding);
+        }
     }
 
     $search  = array( "\\",   "\x00", "\n",  "\r",  "'",  '"',  "\x1a" );

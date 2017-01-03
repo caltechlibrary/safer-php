@@ -4,13 +4,19 @@
  ********************************************************************************/
 require('../safer.php');
 // Form uses $_SERVER, $_SESSION and $_POST, setup safer copies.
+$form_map = array(
+   "name" => "Text",
+   "email" => "EMail",
+   "comments" => "Text",
+);
 $_post = array();
 if (isset($_POST)) {
-    $post = safer($_POST);
+    $post = safer($_POST);//, $form_map, true);
 }
 // In this rest of this file rename $_POST to safer $_post
 /** REST of form is the same as before **/
-
+?>
+<?php 
 /*header("Expires: Thu, 17 May 2001 10:17:17 GMT");
 header("Last-Modified: " .gmdate("D,d M Y H:i:s") . "GMT"));*/
 header("Pragma: no-cache");
@@ -20,7 +26,6 @@ header("Cache-Control: no-cache, must-revalidate");
 <?php
 function checkEmail($email) 
 {
-    /*
    if(eregi("^[a-zA-Z0-9_]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$]", $email)) 
    {
       return FALSE;
@@ -43,8 +48,6 @@ function checkEmail($email)
          return FALSE; 
       }
    }
-   */
-   return TRUE;
 }
 ?> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -71,6 +74,7 @@ td p{ margin-top: 0px;}
 <h3>Have Feedback? </h3>
 
 	<!-- online feedback form -->
+	<?php session_start(); ?>
 	<?php if ( $_POST['submitted'] == 'true' && empty($_POST['name']) ): ?>
 	<p><font color="#FF0000">Missing Your Name</font></p>    <?php endif; ?>
     <?php if ( $_POST['submitted'] == 'true' && empty($_POST['email']) ): ?>
@@ -97,11 +101,11 @@ td p{ margin-top: 0px;}
   <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="form_fields">
  <!-- <p> Your Name (<span class="redasterisk"> *</span>):<br /> -->
   <p> Your Name <label><small>(required)</small></label>:<br />
-      <input name="name" size="45" value="<?php echo $_POST['name']; ?>" /> 
+      <input name="name" size="45" value="<?php echo $_post['name']; ?>" /> 
   </p>
   <!--<p>Your E-Mail Address (<span class="redasterisk"> *</span>):<br /> -->
   <p> Your E-Mail Address <label><small>(required)</small></label>:<br />
-      <input name="email" size="45" value="<?php echo $_POST['email']; ?>" />
+      <input name="email" size="45" value="<?php echo $_post['email']; ?>" />
   </p>
   <p>
     <input name="copy" type="checkbox" value="copy" <?php if ( $_POST['copy']== "copy" ) { echo "checked" ;} ?> /> 
@@ -115,7 +119,7 @@ td p{ margin-top: 0px;}
 
 
   <p>Comments:<br />
-      <textarea name="comments" rows="10" cols="40"><?php echo $_POST['comments']; ?></textarea>
+      <textarea name="comments" rows="10" cols="40"><?php echo $_post['comments']; ?></textarea>
   </p>
 
 <input type="hidden" name="submitted" value="true" />
@@ -133,18 +137,18 @@ td p{ margin-top: 0px;}
 if ( $_POST['submitted'] == 'true' && !empty($_POST['validator']) && $_POST['validator'] == $_SESSION['IMAGE_CODE']
 	&& $_POST['name'] <> '' && $_POST['email'] <> '' && checkEmail($_POST['email'])<> FALSE)
 {
-   define (NL, "<BR />\n");
+   define ("NL", "<BR />\n");
 	echo ("<h4>Your feedback has been submitted.</h4>\n");
 
     unset($_SESSION['IMAGE_CODE']); //**************************************
-    /* session_destroy(); */
+    session_destroy();
    	$timestamp = date("F dS, Y h:i:s a");
 	
 	echo ("<P>\n");
 	echo ("Time: " . $timestamp . NL);
-	echo ("Name: " . $_POST['name'] . NL);
-	echo ("Email: " . $_POST['email'] . NL);
-	echo ("Comments: <br><pre>" . $_POST['comments'] . NL);
+	echo ("Name: " . $_post['name'] . NL);
+	echo ("Email: " . $_post['email'] . NL);
+	echo ("Comments: <br><pre>" . $_post['comments'] . NL);
 	echo ("</pre></p><p>");
 	echo ('<a href="/m"> Mobile home</a>');
         echo ("</P></blockquote>");
@@ -152,28 +156,16 @@ if ( $_POST['submitted'] == 'true' && !empty($_POST['validator']) && $_POST['val
 	$output = "Time: " . $timestamp . "\n";
 	$output .= "IP: " . $_SERVER['REMOTE_ADDR'] . "\n";
 	$output .= "User Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
-	$output .= "Name: " . $_POST['name'] . "\n";
-	$output .= "Email: " . $_POST['email']. "\n";
-	$output .= "URL: " . $_POST['url']. "\n";
-	$output .= "Comments: " . "\n". $_POST['comments']. "\n";
+	$output .= "Name: " . $_post['name'] . "\n";
+	$output .= "Email: " . $_post['email']. "\n";
+	$output .= "URL: " . $_post['url']. "\n";
+	$output .= "Comments: " . "\n". $_post['comments']. "\n";
 	$bcc = "kbuxton@library.caltech.edu,";
-	if ( $_POST['copy']== "copy" ) { $bcc .= $_POST['email']; }
-//mail("library@caltech.edu ", "Caltech Library Services Mobile Feedback", $output, "From: ".$_POST['email']."\r\n"."Bcc: ".$bcc."\r\n");
-print("DEBUG <pre>"); // DEBUG
-print("library@caltech.edu "); // DEBUG
-print("Caltech Library Services Mobile Feedback"); // DEBUG
-print($output);// DEBUG
-printf("From: ".$_POST['email']."\r\n"."Bcc: ".$bcc."\r\n" );// DEBUG
-print("</pre>"); // DEBUG
+	if ( $_post['copy']== "copy" ) { $bcc .= $_post['email']; }
+//mail("library@caltech.edu ", "Caltech Library Services Mobile Feedback", $output, "From: ".$_post['email']."\r\n"."Bcc: ".$bcc."\r\n");
 
-} else {
-    print("DEBUG form not submitted");// DEBUG
-    print("DEBUG<pre>");// DEBUG
-    print(json_encode($_SESSION)); // DEBUG
-    print(PHP_EOL);// DEBUG
-    print(json_encode($_POST));
-    print("</pre>");// DEBUG
 }
+echo "DEBUG _post -> _POST:<pre> " . json_encode($_post) . "\n" . json_encode($_POST) . "</pre>". PHP_EOL;
 ?>
 <!-- end online contact form -->
 

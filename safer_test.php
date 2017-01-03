@@ -20,8 +20,11 @@
 
 define("SAFER_ALLOW_UNSAFE", true);
 if (php_sapi_name() !== "cli") {
+    /*
     echo "Must be run from the command line." . PHP_EOL;
     exit(1);
+    */
+    header("Content-Type: text/plain");
 }
 error_reporting(E_ALL | E_STRICT);
 @date_default_timezone_set(date_default_timezone_get());
@@ -601,6 +604,7 @@ function testMakeAs()
         $assert->equal($e, $r, "[$e] == [$r] for [$s]");
     }
 
+    if (function_exists("mb_detect_encoding") === TRUE) {
     $text=<<<EOT
 Frédéric Hurlet, Université Paris-Ouest, Nanterre La Défense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
 EOT;
@@ -646,7 +650,9 @@ EOT;
 
     $result = makeAs($text, 'HTML', true);
     $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
-    
+    } else {
+        return "OK, but skipped multi-byte tests as mb_detect_encoding() not defined";
+    }
     return "OK";
 }
 
@@ -678,6 +684,9 @@ function testSelectMultiple()
 function testUTF2HTML() 
 {
     global $assert;
+    if (function_exists("mb_detect_encoding") === FALSE) {
+        return "Skipped, missing multi-byte functions";
+    }
     
     $s = '<a href="#jim">Jim</a> said, ' . html_entity_decode('&ldquo;') . 'I' . 
         html_entity_decode('&apos;') . 's here now.' . html_entity_decode('&rdquo;');
@@ -1013,7 +1022,6 @@ $assert->ok(function_exists("saferFilename"), "Should have a saferFilename");
 
 echo "\tTesting testServerAssociativeArray: " .  testServerAssociativeArray() . PHP_EOL;
 echo "\tTesting testIsFilename: " . testIsFilename() . PHP_EOL;
-echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
 echo "\tTesting testHREFCleaning: " . testHREFCleaning() . PHP_EOL;
 echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
@@ -1022,7 +1030,6 @@ echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL
 echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes() . PHP_EOL;
 echo "\tTesting testHTMLQuoteHandling: " . testHTMLQuoteHandling() . PHP_EOL;
 echo "\tTesting testSelectMultiple: " . testSelectMultiple() . PHP_EOL;
-echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
 echo "\tTesting support functions: " . testSupportFunctions() . PHP_EOL;
 echo "\tTesting get processing: " . testGETProcessing() . PHP_EOL;
 echo "\tTesting post processing: " . testPOSTProcessing() . PHP_EOL;
@@ -1032,5 +1039,7 @@ echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
 echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
 echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization() . PHP_EOL;
+echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
+echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>
