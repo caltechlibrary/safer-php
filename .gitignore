@@ -2,3 +2,4 @@
 *.zip
 dist/
 about/
+safer-php-v*/
