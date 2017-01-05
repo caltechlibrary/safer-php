@@ -1,5 +1,5 @@
 <?php
-require '../safer.php';
+require ('../safer.php');
 if (isset($_POST['the_selected'])) {
     $the_selected = json_encode($_POST['the_selected'], JSON_PRETTY_PRINT);
 }
