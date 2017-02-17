@@ -280,7 +280,7 @@ function escape($value)
  * @param $value - the value to be processed
  * @param $format - the format to render (i.e. integer, float, varname, 
  * varname_list, html, text and PRCE friendly regular expressions)
- * @param $verbose - error log the result of makeAs for regular expression.
+ * @param $verbose (optional) - error log the result of makeAs for regular expression.
  * @return a safe version of value in the format requested or false if a problem.
  */
 function makeAs($value, $format, $verbose = false) 
@@ -307,15 +307,19 @@ function makeAs($value, $format, $verbose = false)
         }
         return $a;
     case 'integer':
-        $i = intval($value);
-        if ("$i" == $value) {
-            return $i;
+        if (is_numeric($value) && intval($value) !== false) {
+            $i = intval($value);
+            if ("$i" == $value) {
+                return $i;
+            }
         }
         break;
     case 'float':
-        $f = floatval($value);
-        if ("$f" == $value) {
-            return $f;
+        if (is_numeric($value) && floatval($value) !== false) {
+            $f = floatval($value);
+            if ("$f" == $value) {
+                return $f;
+            }
         }
         break;
     case 'boolean':
@@ -398,10 +402,11 @@ function makeAs($value, $format, $verbose = false)
  * process the supplied raw associative array (e.g. $_GET, $_POST) a sanitized associative array.
  * @param $validation_map - You should supply an explicit validation map. Will allow NULL
  * if SAFER_ALLOW_UNSAFE defined with true.
- * @param $verbose - log regexp makeAs results. (default is false)
+ * @param $verbose (optional) - log regexp makeAs results. (default is false)
+ * @param $enforceDefault (optional) - if true enforce a default value based on $format
  * @return the sanitized version of $_GET.
  */
-function safer($raw_map, $validation_map = null, $verbose = false) 
+function safer($raw_map, $validation_map = null, $verbose = false, $enforceDefault = false) 
 {
     $results = array();
 
@@ -411,11 +416,39 @@ function safer($raw_map, $validation_map = null, $verbose = false)
         $validation_map = defaultValidationMap($raw_map, true);
     }
     if ($validation_map !== null) {
+        if ($enforceDefault == true) {
+            $default_types = [
+                'array_text' => array(),
+                'array_integers' => array(),
+                'integer' => 0,
+                'float' => 0.0,
+                'boolean' => false,
+                'varname_dash' => '',
+                'varname' => '',
+                'varname_list' => array(),
+                'html' => '',
+                'text' => '',
+                'url' => '',
+                'email' => '',
+                'filename' => '',
+            ];
+            foreach($validation_map as $key => $format) {
+                // Propogate missing values
+                if (isset($raw_map[$key]) === false) {
+                    $format = strtolower($format);
+                    if (isset($format) === true) {
+                        $raw_map[$key] = $default_types[$format];
+                    } else {
+                        $raw_map[$key] = '';
+                    }
+                }
+            }
+        }
         foreach($validation_map as $key => $format) {
             // Since RESTful style allows dashes in the URLs we should support
             // that in GET args.
             $key = makeAs($key, "varname_dash", $verbose);
-            if (isset($raw_map[$key])) {
+            if ($key !== false && isset($raw_map[$key])) {
                 $results[$key] = makeAs($raw_map[$key], $format, $verbose);
             }
         }
@@ -435,7 +468,7 @@ function saferJSON($json_string, $validation_map, $verbose = false)
 {
     $obj = json_decode($json_string, true);
     $results = array();
-    
+   $verbose = true; //DEBUG 
     foreach($validation_map as $key => $format) {
         $key = makeAs($key, "varname", $verbose);
         if (isset($obj[$key])) {

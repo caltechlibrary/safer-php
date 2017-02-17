@@ -1013,6 +1013,25 @@ function testServerAssociativeArray()
     return "OK";
 }
 
+function testEnforceDefaultsTrue() {
+    global $assert;
+
+    $a = safer(array(), [
+        'name' => 'text',
+        'id' => 'integer',
+    ], false, true);
+    if (isset($a['name']) === false || isset($a['id']) === false) {
+        $assert->fail('Missing name or id keys ' . print_r($a, true));
+    }
+    if ($a['name'] !== '') {
+        $assert->fail('name key should be set to an empty string "' . print_r($a['name'], true) . '"');
+    }
+    if ($a['id'] !== 0) {
+        $assert->fail('id key should be set to zero integer value' . print_r($a, true));
+    }
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -1041,5 +1060,6 @@ echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
 echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization() . PHP_EOL;
 echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
+echo "\tTesting testEnforceDefaultsTrue: " . testEnforceDefaultsTrue() . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>
