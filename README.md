@@ -1,6 +1,8 @@
 # safer-php
 
-A tiny input vetting library for legacy PHP code. 
+A tiny input vetting library for legacy PHP code.  Also includes examples
+of adding minimal testing using saferclient.php to interact with a PHP
+driven site.
 
 # Retrofiting legacy PHP projects
 

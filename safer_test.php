@@ -30,16 +30,16 @@ error_reporting(E_ALL | E_STRICT);
 @date_default_timezone_set(date_default_timezone_get());
 
 echo 'Loading safer.php' . PHP_EOL;
-require 'safer.php';
+require_once('safer.php');
 
 /**
- * Assert class creates an Assert object designed to have the
- * same method structure and calling behavoir as NodeJS's assert module.
+ * Testing class creates an test object designed to have the
+ * same method structure and calling behavoir as Golang's testing package.
  */
-class Assert
+class Testing
 {
   /**
-   * truthyness - Tests if actual is equal to expected using the operator provided.
+   * truthyness - Testing if actual is equal to expected using the operator provided.
    *
    * @param $actual
    * @param $expected
@@ -104,8 +104,8 @@ class Assert
   }
 
   /**
-   * ok - Tests if value is a true  value, it is equivalent to 
-   * Assert::equal(true, value, message);
+   * ok - Testing if value is a true  value, it is equivalent to 
+   * Testing::equal(true, value, message);
    * @param $value - value to be compared with true.
    * @param $message - the message to use if an exception is found.
    * @return true if assertion OK otherwise it throws and exception with 
@@ -113,12 +113,12 @@ class Assert
    */
   public function ok($value, $message) 
   {
-        return Assert::truthyness(true, $value, $message, '==');
+        return Testing::truthyness(true, $value, $message, '==');
   }
 
   /**
-   * notOk - Tests if value is a NOT true  value, it is equivalent to 
-   * Assert::equal(false, value, message);
+   * notOk - Testing if value is a NOT true  value, it is equivalent to 
+   * Testing::equal(false, value, message);
    * @param $value - value to be compared with true.
    * @param $message - the message to use if an exception is found.
    * @return true if assertion OK otherwise it throws and exception with 
@@ -126,24 +126,24 @@ class Assert
    */
   public function notOk($value, $message) 
   {
-        return Assert::truthyness(true, $value, $message, '!=');
+        return Testing::truthyness(true, $value, $message, '!=');
   }
 
   /**
-   * fail - Assert a failure. It is equal to
-   * Assert::equal(false, true, message);
+   * fail - Testing a failure. It is equal to
+   * Testing::equal(false, true, message);
    * @param $message - the message to use if an exception is found.
    * @return true if assertion OK otherwise it throws and exception with 
    * the $exception_message
    */
   public function fail($message) 
   {
-        return Assert::truthyness(true, false, $message, '==');
+        return Testing::truthyness(true, false, $message, '==');
   }
 
   /**
    * isTrue - asserts $value is equal to true, it is equivalent to 
-   * Assert::equal(true, value, message);
+   * Testing::equal(true, value, message);
    * @param $value - value to be compared with true.
    * @param $message - the message to use if an exception is found.
    * @return true if assertion OK otherwise it throws and exception with 
@@ -151,12 +151,12 @@ class Assert
    */
   public function isTrue($value, $message) 
   {
-        return Assert::truthyness(true, $value, $message, '==');
+        return Testing::truthyness(true, $value, $message, '==');
   }
 
   /**
    * isFalse - asserts $value is equal to false, it is equivalent to 
-   * Assert::equal(false, value, message);
+   * Testing::equal(false, value, message);
    * @param $value - value to be compared with true.
    * @param $message - the message to use if an exception is found.
    * @return true if assertion OK otherwise it throws and exception with 
@@ -164,12 +164,12 @@ class Assert
    */
   public function isFalse($value, $message) 
   {
-        return Assert::truthyness(false, $value, $message, '==');
+        return Testing::truthyness(false, $value, $message, '==');
   }
 
   
   /**
-   * equal - Tests shallow, coercive equality with the equal comparison 
+   * equal - Testing shallow, coercive equality with the equal comparison 
    * operator ( == ).
    * @param $actual - the value your are evaluating
    * @param $expected - the expacted value
@@ -185,7 +185,7 @@ class Assert
   }
 
   /**
-   * notEqual - Tests shallow, coercive non-equality with the not equal
+   * notEqual - Testing shallow, coercive non-equality with the not equal
    * comparison operator ( !=  ).  
    *
    * @param  $actual
@@ -195,7 +195,7 @@ class Assert
    */
   public function notEqual($actual, $expected, $message) 
   {
-        return Assert::truthyness($actual, $expected, $message, '!=');
+        return Testing::truthyness($actual, $expected, $message, '!=');
   }
   
   /**
@@ -208,7 +208,7 @@ class Assert
    */
   public function strictEqual($actual, $expected, $message) 
   {
-        return Assert::truthyness($actual, $expected, $message, '===');
+        return Testing::truthyness($actual, $expected, $message, '===');
   }
   
   /**
@@ -221,7 +221,7 @@ class Assert
    */
   public function strictNotEqual($actual, $expected, $message) 
   {
-        return Assert::truthyness($actual, $expected, $message, '!==');
+        return Testing::truthyness($actual, $expected, $message, '!==');
   }
 
   /**
@@ -232,7 +232,7 @@ class Assert
    */
   public function notTrue($actual, $message) 
   {
-        return Assert::truthyness($actual, true, $message, '!=');
+        return Testing::truthyness($actual, true, $message, '!=');
   }
 
 
@@ -244,7 +244,7 @@ class Assert
    */
   public function notFalse($actual, $message) 
   {
-        return Assert::truthyness($actual, false, $message, '!=');
+        return Testing::truthyness($actual, false, $message, '!=');
   }
 
 
@@ -256,7 +256,7 @@ class Assert
    */
   public function strictNotTrue($actual, $message) 
   {
-        return Assert::truthyness($actual, true, $message, '!==');
+        return Testing::truthyness($actual, true, $message, '!==');
   }
 
 
@@ -268,31 +268,24 @@ class Assert
    */
   public function strictNotFalse($actual, $message) 
   {
-        return Assert::truthyness($actual, false, $message, '!==');
+        return Testing::truthyness($actual, false, $message, '!==');
   }
 }
 
-// Global Assert object
-$assert = new Assert();
 
-
-function testIsFilename() 
+function testIsFilename($testIt) 
 {
-    global $assert;
-
-    $assert->ok(isValidFilename("three.txt"), "/one/two/three.txt should be valid");
-    $assert->ok(isValidFilename("/one/two/three.txt"), "/one/two/three.txt should be valid");
-    $assert->ok(!isValidFilename("../etc/passwd"), "../etc/passwd should not be accepted as a valid filename");
-    $assert->ok(!isValidFilename("../etc/passwdpoiweopirepoewripewroperiwporpweoiewrpoiwerpoierwpoirepwoweripoewpoewrpoewripeowripewroierwpoierwpopeowirpoewrirewpoweripewroipeworiewproierwpierwpoierwpoirwepoierwpoiwerpoewirpewirperwipoerirepoierpowiepoweierpoiewrpoewrirewp"), "../etc/passwd should not be accepted as a valid filename");
+    $testIt->ok(isValidFilename("three.txt"), "/one/two/three.txt should be valid");
+    $testIt->ok(isValidFilename("/one/two/three.txt"), "/one/two/three.txt should be valid");
+    $testIt->ok(!isValidFilename("../etc/passwd"), "../etc/passwd should not be accepted as a valid filename");
+    $testIt->ok(!isValidFilename("../etc/passwdpoiweopirepoewripewroperiwporpweoiewrpoiwerpoierwpoirepwoweripoewpoewrpoewripeowripewroierwpoierwpopeowirpoewrirewpoweripewroipeworiewproierwpierwpoierwpoirwepoierwpoiwerpoewirpewirperwipoerirepoierpowiepoweierpoiewrpoewrirewp"), "../etc/passwd should not be accepted as a valid filename");
 
     return "OK";
 }
 
-function testSupportFunctions() 
+function testSupportFunctions($testIt)
 {
-    global $assert;
-    
-    // Test basic GET args
+    // Testing basic GET args
     $_GET = array();
     $_GET["int"] = "1";
     $_GET["float"] = "2.1";
@@ -313,63 +306,58 @@ function testSupportFunctions()
         "email" => "Email"
     );
     $results = defaultValidationMap($_GET);
-    $assert->ok($results, "Should get back an array for defaultValidationMap()");
+    $testIt->ok($results, "Should get back an array for defaultValidationMap()");
     foreach ($expected_map as $key => $value) {
-        $assert->ok(isset($results[$key]), "Must have $key in results");
-        $assert->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
+        $testIt->ok(isset($results[$key]), "Must have $key in results");
+        $testIt->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
     }
     foreach ($results as $key => $value) {
-        $assert->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
+        $testIt->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
     }
     
     return "OK";
 }
 
-function testImprovedURLHandling() 
+function testImprovedURLHandling($testIt) 
 {
-    global $assert;
-
     $_GET = array("url" => "http://example.com");
     $expected = "http://example.com";
     $result = safer($_GET, array("url" => "url"));
-    $assert->equal($result['url'], $expected, "expected $expected");
+    $testIt->equal($result['url'], $expected, "expected $expected");
 
     $_GET = array("url" => "www.example.com");
     $expected = "http://www.example.com";
     $result = safer($_GET, array("url" => "url"));
-    $assert->equal($result['url'], $expected, "expected $expected");
+    $testIt->equal($result['url'], $expected, "expected $expected");
 
     return "OK";
 }
 
-function testFixHTMLQuotes() 
+function testFixHTMLQuotes($testIt) 
 {
-    global $assert;
-    $s = '<p>Test of "quotes" in string.</p>';
+    $s = '<p>Testing of "quotes" in string.</p>';
     $result = fix_html_quotes($s);
-    $expected = '<p>Test of &quot;quotes&quot; in string.</p>';
-    $assert->equal($result, $expected, "Expected entities: " . $result);
+    $expected = '<p>Testing of &quot;quotes&quot; in string.</p>';
+    $testIt->equal($result, $expected, "Expected entities: " . $result);
 
-    $s = 'Test of "quotes" in <b>string</b>.';
+    $s = 'Testing of "quotes" in <b>string</b>.';
     $result = fix_html_quotes($s);
-    $expected = 'Test of &quot;quotes&quot; in <b>string</b>.';
-    $assert->equal($result, $expected, "Expected entities: " . $result);
+    $expected = 'Testing of &quot;quotes&quot; in <b>string</b>.';
+    $testIt->equal($result, $expected, "Expected entities: " . $result);
 
 
-    $s = 'Test of "quotes" before <a href="http://example.com">link</a>.';
+    $s = 'Testing of "quotes" before <a href="http://example.com">link</a>.';
     $result = fix_html_quotes($s);
-    $expected = 'Test of &quot;quotes&quot; before <a href="http://example.com">link</a>.';
-    $assert->equal($result, $expected, "Expected entities: " . $result);
+    $expected = 'Testing of &quot;quotes&quot; before <a href="http://example.com">link</a>.';
+    $testIt->equal($result, $expected, "Expected entities: " . $result);
 
     return "OK";
 }
 
 
-function testGETProcessing() 
+function testGETProcessing($testIt) 
 {
-    global $assert;
-
-    // Test $_GET processing works
+    // Testing $_GET processing works
     $_GET = array(
     "one" => "1",
     "two" => "2.1",
@@ -389,23 +377,21 @@ function testGETProcessing()
     
     $results = safer($_GET);
     
-    $assert->ok($results, "Should have results from safer()");
+    $testIt->ok($results, "Should have results from safer()");
     foreach ($expected_map as $key => $value) {
-        $assert->ok(isset($results[$key]), "Must have $key in results");
-        $assert->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
+        $testIt->ok(isset($results[$key]), "Must have $key in results");
+        $testIt->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
     }
     foreach ($results as $key => $value) {
-        $assert->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
+        $testIt->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
     }
     
     return "OK";
 }
 
-function testPOSTProcessing() 
+function testPOSTProcessing($testIt) 
 {
-    global $assert;
-
-    // Test $_POST processing works
+    // Testing $_POST processing works
     $_POST = array(
     "one" => "1",
     "two" => "2.1",
@@ -421,23 +407,21 @@ function testPOSTProcessing()
     
     $results = safer($_POST);
     
-    $assert->ok($results, "Should have results from safer()");
+    $testIt->ok($results, "Should have results from safer()");
     foreach ($expected_map as $key => $value) {
-        $assert->ok(isset($results[$key]), "Must have $key in results");
-        $assert->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
+        $testIt->ok(isset($results[$key]), "Must have $key in results");
+        $testIt->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
     }
     foreach ($results as $key => $value) {
-        $assert->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
+        $testIt->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
     }
     
     return "OK";
 }
 
-function testSERVERProcessing() 
+function testSERVERProcessing($testIt) 
 {
-    global $assert;
-
-    // Test $_POST processing works
+    // Testing $_POST processing works
     $_SERVER = array(
     "one" => "1",
     "two" => "2.1",
@@ -453,16 +437,16 @@ function testSERVERProcessing()
     
     $results = safer($_SERVER);
     
-    $assert->ok($results, "Should have results from safeSERVER()");
+    $testIt->ok($results, "Should have results from safeSERVER()");
     foreach ($expected_map as $key => $value) {
-        $assert->ok(isset($results[$key]), "Must have $key in results");
-        $assert->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
+        $testIt->ok(isset($results[$key]), "Must have $key in results");
+        $testIt->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
     }
     foreach ($results as $key => $value) {
-        $assert->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
+        $testIt->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
     }
 
-    // Test processing PATH_INFO against a known path structure.
+    // Testing processing PATH_INFO against a known path structure.
     $term_code_regexp = "20[0-9][0-9][1-3]";
     $section_code_regexp = "[0-9][0-9][0-9][0-9][0-9]";
     $_SERVER['PATH_INFO'] = '/20142/33361';
@@ -472,19 +456,18 @@ function testSERVERProcessing()
             "PATH_INFO" => '/' . $term_code_regexp . '/' . $section_code_regexp
         )
     );
-    $assert->ok($results, "Should have results from safeSERVER() for PATH_INFO");
-    $assert->ok($results['PATH_INFO'], "PATH_INFO should not be false");
+    $testIt->ok($results, "Should have results from safeSERVER() for PATH_INFO");
+    $testIt->ok($results['PATH_INFO'], "PATH_INFO should not be false");
     return "OK";
 }
 
-function testSafeStrToTime() 
+function testSafeStrToTime($testIt) 
 {
-    global $assert;
     $s = "2014-01-01 00:00:00";
     try {
         $dt = saferStrToTime($s);
     } catch (Exception $exception) {
-        $assert->fail("Shouldn't get this exception: " . $exception);
+        $testIt->fail("Shouldn't get this exception: " . $exception);
     }
     
     $s = "bogus date here.";
@@ -494,86 +477,81 @@ function testSafeStrToTime()
     } catch(Exception $exception) {
         $exception_thrown = true;
     }
-    $assert->ok($exception_thrown, "Should have thrown an exception on converting $s");
+    $testIt->ok($exception_thrown, "Should have thrown an exception on converting $s");
     return "OK";
 }
 
-function testVarnameLists() 
+function testVarnameLists($testIt) 
 {
-    global $assert;
     $s = "one,two,three";
     $r = makeAs($s, "varname_list");
-    $assert->equal($s, $r, "[$s] == [$r]");
+    $testIt->equal($s, $r, "[$s] == [$r]");
     $e = 'one,two,three';
     $s = '$' . 'one,two,' . '$' . 'three';
     $r = makeAs($s, "varname_list");
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     $e = true;
     $s = 'true';
     $r = makeAs($s, 'boolean');
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     $e = true;
     $s = '1';
     $r = makeAs($s, 'boolean');
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     $e = false;
     $s = 'false';
     $r = makeAs($s, 'boolean');
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     $e = false;
     $s = '0';
     $r = makeAs($s, 'boolean');
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     $e = false;
     $s = 'blahblah';
     $r = makeAs($s, 'boolean');
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     
     return "OK";
 }
 
-function testPRCEExpressions() 
+function testPRCEExpressions($testIt) 
 {
-    global $assert;
-
     $re = "\([0-9][0-9][0-9]\)[0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]";
     $s = "(626)395-3405";
     $e = "(626)395-3405";
     $r = makeAs($s, $re, true);
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
 
     $s = "(626)395-340592";
     $e = false;
     $r = makeAs($s, $re, true);
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
 
     return "OK";
     
 }
 
-function testMakeAs() 
+function testMakeAs($testIt) 
 {
-    global $assert;
-
     $s = "one1";
     $e = "one1";
     $r = makeAs($s, "varname", false);
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
 
     $s = 1;
     $e = false;
     $r = makeAs($s, "varname", false);
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
 
     $s = "http://library.caltech.edu";
     $e = "http://library.caltech.edu";
     $r = makeAs($s, "Url", false);
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
 
     $s = "htp://library.caltech.edu";
     $e = false;
     $r = makeAs($s, "Url", false);
-    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
 
     $valid_email_examples = array(
         'gobeavers@library.caltech.edu',
@@ -587,7 +565,7 @@ function testMakeAs()
     foreach ($valid_email_examples as $s) {
         $e = $s;
         $r = makeAs($s, "Email", false);
-        $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+        $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     }
     $invalid_email_examples = array(
         '3@c@gobeavers@library.caltech.edu',
@@ -601,7 +579,7 @@ function testMakeAs()
     foreach ($invalid_email_examples as $s) {
         $e = false;
         $r = makeAs($s, "Email", false);
-        $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+        $testIt->equal($e, $r, "[$e] == [$r] for [$s]");
     }
 
     if (function_exists("mb_detect_encoding") === TRUE) {
@@ -614,7 +592,7 @@ Fr&#233;d&#233;ric Hurlet, Universit&#233; Paris-Ouest, Nanterre La D&#233;fense
 EOT;
 
     $result = makeAs($text, 'HTML', true);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
 
     // Christel Muller example.
     $text=<<<EOT
@@ -625,7 +603,7 @@ EOT;
 Christel M&#252;ller, Universit&#233; Paris-Ouest Nanterre La D&#233;fense, will present &quot;The &apos;common emporion of Greece&apos;: groups and subgroups of foreigners in Late Hellenistic Delos&apos; to the Pre-Modern Mediterranean&quot; seminar on Monday, April 20th.
 EOT;
     $result = makeAs($text, 'HTML', true);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
     $text=<<<EOT
@@ -637,7 +615,7 @@ Professor M&#252;ller&apos;s paper aims at observing the changes that have affec
 EOT;
 
     $result = makeAs($text, 'HTML', true);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
     $text=<<<EOT
@@ -649,17 +627,15 @@ Christel M&#252;ller is Professor of Greek History at the University of Paris Ou
 EOT;
 
     $result = makeAs($text, 'HTML', true);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     } else {
         return "OK, but skipped multi-byte tests as mb_detect_encoding() not defined";
     }
     return "OK";
 }
 
-function testSelectMultiple() 
+function testSelectMultiple($testIt) 
 {
-    global $assert;
-
     $_POST = array(
         'select_multiple' => array(
             '1',
@@ -675,15 +651,14 @@ function testSelectMultiple()
         )
     );
 
-    $assert->equal($post['select_multiple'][0], '1', 'First element should be "1"');
-    $assert->equal($post['select_multiple'][1], '2', 'Second element should be "2"');
-    $assert->equal(isset($post['select_multiple'][2]), false, "Third element should not be there. " . print_r($post, true));
+    $testIt->equal($post['select_multiple'][0], '1', 'First element should be "1"');
+    $testIt->equal($post['select_multiple'][1], '2', 'Second element should be "2"');
+    $testIt->equal(isset($post['select_multiple'][2]), false, "Third element should not be there. " . print_r($post, true));
     return "OK";
 }
 
-function testUTF2HTML() 
+function testUTF2HTML($testIt) 
 {
-    global $assert;
     if (function_exists("mb_detect_encoding") === FALSE) {
         return "Skipped, missing multi-byte functions";
     }
@@ -696,19 +671,19 @@ function testUTF2HTML()
         $e = '<a href="#jim">Jim</a> said, &ldquo;I&apos;s here now.&rdquo;';
     }
     $r = utf2html($s);
-    $assert->equal($e, $r, "[$e] != [$s]");
+    $testIt->equal($e, $r, "[$e] != [$s]");
     /*FIXME: not sure a solution for this one yet. 
     // Strip \u009c, \u009d, \u0080
     $s = '&#195;&#162;&#194;\u0080&#194;\u009cPicturing Ovid in Pompeii&#195;&#162;&#194;\u0080&#194;\u009d Peter Knox (University of Colorado)';
     $e = '&#195;&#162;&#194;&#194;Picturing Ovid in Pompeii&#195;&#162;&#194;#194; Peter Knox (University of Colorado)';
     $r = utf2html($s);
-    $assert->equal($e, $r, "[$e] != [$s]");
+    $testIt->equal($e, $r, "[$e] != [$s]");
     */
 
     $s = '<a href="mylink.html">My Link</a>';
     $e = '<a href="mylink.html">My Link</a>';
     $r = utf2html($s);
-    $assert->equal($e, $r, "[$e] != [$s]");
+    $testIt->equal($e, $r, "[$e] != [$s]");
 
     $text=<<<EOT
 Frédéric Hurlet, Université Paris-Ouest, Nanterre La Défense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
@@ -719,7 +694,7 @@ Fr&#233;d&#233;ric Hurlet, Universit&#233; Paris-Ouest, Nanterre La D&#233;fense
 EOT;
 
     $result = utf2html($text);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
 
     $text=<<<EOT
 Like promotion, loss of social position in Rome tends to exist only when it becomes visible and is inserted as such in public space a way or another. This lecture will focus on two political practices which meant for concerned senators a loss of credit,and thus of status: first, the official act by which the prince or a member of the imperial family would withdraw his friendship from a senator (the so called renuntiatio amicitiae); then, the way a senator could be prevented from visiting the prince (theinterdictio aulae). This lecture will present the sources for these two practices focusing on the more practical aspects and their spatial inscription.
@@ -730,7 +705,7 @@ Like promotion, loss of social position in Rome tends to exist only when it beco
 EOT;
 
     $result = utf2html($text);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
 
 
     $text=<<<EOT
@@ -742,7 +717,7 @@ Fr&#233;d&#233;ric Hurlet is professor of History of the Roman World, University
 EOT;
    
     $result = utf2html($text);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
     // Christel Muller example.
     $text=<<<EOT
@@ -753,7 +728,7 @@ EOT;
 Christel M&#252;ller, Universit&#233; Paris-Ouest Nanterre La D&#233;fense, will present "The 'common emporion of Greece': groups and subgroups of foreigners in Late Hellenistic Delos' to the Pre-Modern Mediterranean" seminar on Monday, April 20th.
 EOT;
     $result = utf2html($text);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
     $text=<<<EOT
@@ -765,7 +740,7 @@ Professor M&#252;ller's paper aims at observing the changes that have affected, 
 EOT;
 
     $result = utf2html($text);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
     $text=<<<EOT
@@ -777,7 +752,7 @@ Christel M&#252;ller is Professor of Greek History at the University of Paris Ou
 EOT;
 
     $result = utf2html($text);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
 
     // NOTE: The micron should not cause the text to be changed. This test confirms the text is preserved by utf2html()
     $text=<<<EOT
@@ -789,44 +764,40 @@ Standard historiography of the church in Kyoto during the Christian Century (154
 EOT;
 
     $result = utf2html($text);
-    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+    $testIt->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
     return "OK";
 }
 
-function testAttributeCleaning() 
+function testAttributeCleaning($testIt) 
 {
-    global $assert;
-
     $s = '<div><a href="mylink.html" title="fred" style="font-size:20">Fred</a></div>';
     $e = '<div><a href="mylink.html" title="fred">Fred</a></div>';
     $r = strip_attributes($s);
-    $assert->equal($e, $r, "[$e] != [$s]");
+    $testIt->equal($e, $r, "[$e] != [$s]");
 
     $s = '<div><a href="mylink.html" title="fred" style="font-size:20">Fred</a></div>';
     $e = escape('<div><a href="mylink.html" title="fred">Fred</a></div>');
     $r = makeAs($s, "HTML");
-    $assert->equal($e, $r, "[$e] != [$r]");
+    $testIt->equal($e, $r, "[$e] != [$r]");
     $pos = strpos($r, 'href=');
-    $assert->notEqual($pos, false, "$pos should not be false.");
+    $testIt->notEqual($pos, false, "$pos should not be false.");
     $pos = strpos($r, 'style=');
-    $assert->equal($pos, false, "[$e] != [$s]");
+    $testIt->equal($pos, false, "[$e] != [$s]");
 
     $s = '<div><a href="javascript:alert(\'Something bad\');" title="fred" style="font-size:20">Fred</a></div>';
     $e = escape('<div><a title="fred">Fred</a></div>');
     $r = makeAs($s, "HTML");
-    $assert->equal($e, $r, "[$e] != [$r]");
+    $testIt->equal($e, $r, "[$e] != [$r]");
     $pos = strpos($r, 'href=');
-    $assert->equal($pos, false, "$pos should be false.");
+    $testIt->equal($pos, false, "$pos should be false.");
     $pos = strpos($r, 'style=');
-    $assert->equal($pos, false, "$pos should be false");
+    $testIt->equal($pos, false, "$pos should be false");
     return "OK";
 }
 
-function testSafeJSON() 
+function testSafeJSON($testIt) 
 {
-    global $assert;
-
     $validation_map = array(
         'return_to_url' => '(\w+|\.|-|[0-9])+',
         'event_id' => 'Integer',
@@ -857,48 +828,44 @@ function testSafeJSON()
         'feature_candidate' => 'Boolean');
 
     $badjson =<<<BAD_JSON
-{"event_id":"913298","title":"<a href =\"javascript:whs(1)\">click<\/a>","subtitle":"","summary":"<script>function whs(val) { assert(val); }</script>click<a  href =\"javascript:whs(1)\">click<\/a>","description":"<a  href =\"javascript:whs(1)\">click<\/a>","cost":"","contact_phone":"","contact_email":"","rsvp_email":"","rsvp_url":"","url":"","ticket_url":"","campus":"University Park","venue":"125th Anniversary Fountain","building_code":"","room":"1234","address":"125th Anniversary Fountain","feature_candidate":"0","username":"dd_064","name":"WhiteHat Audit Account","scratch_pad":"","created":"2014-11-06 12:52:50","updated":"2014-11-06 12:52:50","publication_date":"0000-00-00 00:00:00","parent_calendar_id":"32","parent_calendar":"USC Public Events","sponsors":[],"audiences":[],"schedule":"11\/25\/2014: 03:00 - 05:00","dates":"11\/25\/2014","occurrences":[{"start":"2014-11-25 03:00:00","end":"2014-11-25 05:00:59"}],"first_occurrence":"2014-11-25 03:00:00","last_occurrence":"2014-11-25 03:00:00","next_occurrence":"2014-11-25 03:00:00","categories":{"32":["Theater"]},"attachments":{"32":{"image_o":{"mime_type":"image\/jpeg","url":"https:\/\/web-app.library.caltech.edu\/event-images\/32\/913298\/whs_xss_test.jpg"}}},"status":{"32":{"status":"draft","calendar_id":"32"}},"start":"3:00","end":"5:00","error_status":"OK"}
+{"event_id":"913298","title":"<a href =\"javascript:whs(1)\">click<\/a>","subtitle":"","summary":"<script>function whs(val) { testIt(val); }</script>click<a  href =\"javascript:whs(1)\">click<\/a>","description":"<a  href =\"javascript:whs(1)\">click<\/a>","cost":"","contact_phone":"","contact_email":"","rsvp_email":"","rsvp_url":"","url":"","ticket_url":"","campus":"University Park","venue":"125th Anniversary Fountain","building_code":"","room":"1234","address":"125th Anniversary Fountain","feature_candidate":"0","username":"dd_064","name":"WhiteHat Audit Account","scratch_pad":"","created":"2014-11-06 12:52:50","updated":"2014-11-06 12:52:50","publication_date":"0000-00-00 00:00:00","parent_calendar_id":"32","parent_calendar":"USC Public Events","sponsors":[],"audiences":[],"schedule":"11\/25\/2014: 03:00 - 05:00","dates":"11\/25\/2014","occurrences":[{"start":"2014-11-25 03:00:00","end":"2014-11-25 05:00:59"}],"first_occurrence":"2014-11-25 03:00:00","last_occurrence":"2014-11-25 03:00:00","next_occurrence":"2014-11-25 03:00:00","categories":{"32":["Theater"]},"attachments":{"32":{"image_o":{"mime_type":"image\/jpeg","url":"https:\/\/web-app.library.caltech.edu\/event-images\/32\/913298\/whs_xss_test.jpg"}}},"status":{"32":{"status":"draft","calendar_id":"32"}},"start":"3:00","end":"5:00","error_status":"OK"}
 BAD_JSON;
 
     $result = json_decode($badjson, true);
     $result = saferJSON($badjson, $validation_map, false);
-    $assert->ok(is_array($result), "Should get an array type back");
-    $assert->ok(is_integer($result['event_id']), "Should have an integer value for event_id");
-    $assert->equal($result['event_id'], 913298, "have an event id of 913298");
-    $assert->ok(is_string($result['title']), "title should be string " . gettype($result['title']));
-    $assert->equal($result['title'], "click", "title wrong.");
-    $assert->equal(strpos($result['summary'], "<script>"), false, "Should move script element");
+    $testIt->ok(is_array($result), "Should get an array type back");
+    $testIt->ok(is_integer($result['event_id']), "Should have an integer value for event_id");
+    $testIt->equal($result['event_id'], 913298, "have an event id of 913298");
+    $testIt->ok(is_string($result['title']), "title should be string " . gettype($result['title']));
+    $testIt->equal($result['title'], "click", "title wrong.");
+    $testIt->equal(strpos($result['summary'], "<script>"), false, "Should move script element");
     return "OK";
 }
 
-function testHREFCleaning() 
+function testHREFCleaning($testIt) 
 {
-    global $assert;
-
     $validation_map = array(
         "title" => "HTML"
        );
     $_POST = array(
-        "title" => 'Injection <a href="javascript:alert(\"Something Bad\")">Test</a>.'
+        "title" => 'Injection <a href="javascript:alert(\"Something Bad\")">Testing</a>.'
        );
     $expected_result = array(
-        "title" => 'Injection <a >Test</a>.'
+        "title" => 'Injection <a >Testing</a>.'
        );
     $result = safer($_POST, $validation_map);
-    $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
+    $testIt->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
 
     $_POST = array(
-        "title" => 'Injection <a href=' . "'" . 'javascript:alert("Something Bad")' . "'" . '>Test</a>.'
+        "title" => 'Injection <a href=' . "'" . 'javascript:alert("Something Bad")' . "'" . '>Testing</a>.'
        );
     $result = safer($_POST, $validation_map);
-    $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
+    $testIt->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
     return "OK";
 }
 
-function testAnchorElementSantization() 
+function testAnchorElementSantization($testIt) 
 {
-    global $assert;
-
     $validation_map = array(
        "txt" => "HTML"
     );
@@ -907,66 +874,58 @@ function testAnchorElementSantization()
 {"txt": "<a href=\"javascript:alert('test')\">click</a>"}
 BAD_JSON;
     $result = saferJSON($badjson, $validation_map, false);
-    $assert->equal(strpos($result["txt"], "javascript"), false, "Javascript href should get removed.");
+    $testIt->equal(strpos($result["txt"], "javascript"), false, "Javascript href should get removed.");
     $goodjson =<<<GOOD_JSON
 {"txt": "<a href=\"http://example.com\">click</a>"}
 GOOD_JSON;
     $result = saferJSON($goodjson, $validation_map, false);
-    $assert->ok(strpos($result["txt"], "http://example.com") !== false, "href should not get removed.");
+    $testIt->ok(strpos($result["txt"], "http://example.com") !== false, "href should not get removed.");
     return "OK";
 }
 
-function testHTMLQuoteHandling() 
+function testHTMLQuoteHandling($testIt) 
 {
-    global $assert;
-
-    $_GET = array('title' => '<p>Test of "quotes"</p>');
+    $_GET = array('title' => '<p>Testing of "quotes"</p>');
     $result = safer($_GET, array('title' => 'HTML'));
-    $assert->equal($result['title'], '<p>Test of &quot;quotes&quot;</p>', "Should convert quotes to entity: " . $result['title']);
+    $testIt->equal($result['title'], '<p>Testing of &quot;quotes&quot;</p>', "Should convert quotes to entity: " . $result['title']);
     return "OK";
 }
 
-function testCleanScriptElements() 
+function testCleanScriptElements($testIt) 
 {
-    global $assert;
-
     $raw = '<script>alert("Oops this is bad.");</script>This is a title.';
     $expect = 'alert("Oops this is bad.");This is a title.';
     $result = strip_tags($raw, SAFER_ALLOWED_HTML);
-    $assert->equal($result, $expect, "strip_tags() failed." . $result);
+    $testIt->equal($result, $expect, "strip_tags() failed." . $result);
 
     // lib version should convert the " to &lquo; and &rquo;
     $expect = 'alert(&quot;Oops this is bad.&quot;);This is a title.';
 
     $_GET = array("title" => $raw);
     $result = safer($_GET, array('title' => 'HTML'));
-    $assert->equal($result['title'], $expect, 'Failed to correct ' . $raw);
+    $testIt->equal($result['title'], $expect, 'Failed to correct ' . $raw);
 
 
     $_POST = array("title" => $raw);
     $result = safer($_POST, array('title' => 'HTML'));
-    $assert->equal($result['title'], $expect, 'Failed to correct ' . $raw);
+    $testIt->equal($result['title'], $expect, 'Failed to correct ' . $raw);
     return "OK";
 }
 
-function testSaneUnicodeSupportPCRE() 
+function testSaneUnicodeSupportPCRE($testIt) 
 {
-    global $assert;
-
     $allowInternational = false;
     if (defined('PCRE_VERSION')) {
         if (intval(PCRE_VERSION) >= 7) { // constant available since PHP 5.2.4
                 $allowInternational = true;
         }
     }
-    $assert->ok($allowInternational, "PCRE should support proper UTF-8, may need to compile with --enable-unicode-properties");
+    $testIt->ok($allowInternational, "PCRE should support proper UTF-8, may need to compile with --enable-unicode-properties");
     return "OK";
 }
 
-function testServerAssociativeArray() 
+function testServerAssociativeArray($testIt) 
 {
-    global $assert;
-
     // Example Server associative array
     $_SERVER = array(
         "SCRIPT_URL" => "/m/feedback-fixing.php",
@@ -1008,58 +967,59 @@ function testServerAssociativeArray()
     //  First check using the default map
     $server = safer($_SERVER);
     foreach ($_SERVER as $key => $value) {
-        $assert->equal($server[$key], $value, "$key should be $value, got " . $server[$key]);
+        $testIt->equal($server[$key], $value, "$key should be $value, got " . $server[$key]);
     }
     return "OK";
 }
 
-function testEnforceDefaultsTrue() {
-    global $assert;
-
+function testEnforceDefaultsTrue($testIt) {
     $a = safer(array(), [
         'name' => 'text',
         'id' => 'integer',
     ], false, true);
     if (isset($a['name']) === false || isset($a['id']) === false) {
-        $assert->fail('Missing name or id keys ' . print_r($a, true));
+        $testIt->fail('Missing name or id keys ' . print_r($a, true));
     }
     if ($a['name'] !== '') {
-        $assert->fail('name key should be set to an empty string "' . print_r($a['name'], true) . '"');
+        $testIt->fail('name key should be set to an empty string "' . print_r($a['name'], true) . '"');
     }
     if ($a['id'] !== 0) {
-        $assert->fail('id key should be set to zero integer value' . print_r($a, true));
+        $testIt->fail('id key should be set to zero integer value' . print_r($a, true));
     }
     return "OK";
 }
 
-echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
-$assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
-$assert->ok(function_exists("safer"), "Should have a safer function defined.");
-$assert->ok(function_exists("saferJSON"), "Should have a saferJSON function defined.");
-$assert->ok(function_exists("saferFilename"), "Should have a saferFilename");
+echo "Starting [safer_test.php]..." . PHP_EOL;
 
-echo "\tTesting testServerAssociativeArray: " .  testServerAssociativeArray() . PHP_EOL;
-echo "\tTesting testIsFilename: " . testIsFilename() . PHP_EOL;
-echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
-echo "\tTesting testHREFCleaning: " . testHREFCleaning() . PHP_EOL;
-echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
-echo "\tTesting testCleanScriptElements: " . testCleanScriptElements() . PHP_EOL;
-echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;
-echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes() . PHP_EOL;
-echo "\tTesting testHTMLQuoteHandling: " . testHTMLQuoteHandling() . PHP_EOL;
-echo "\tTesting testSelectMultiple: " . testSelectMultiple() . PHP_EOL;
-echo "\tTesting support functions: " . testSupportFunctions() . PHP_EOL;
-echo "\tTesting get processing: " . testGETProcessing() . PHP_EOL;
-echo "\tTesting post processing: " . testPOSTProcessing() . PHP_EOL;
-echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
-echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
-echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
-echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
-echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
-echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization() . PHP_EOL;
-echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
-echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
-echo "\tTesting testEnforceDefaultsTrue: " . testEnforceDefaultsTrue() . PHP_EOL;
+// Global Testing object
+$testIt = new Testing();
+$testIt->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
+$testIt->ok(function_exists("safer"), "Should have a safer function defined.");
+$testIt->ok(function_exists("saferJSON"), "Should have a saferJSON function defined.");
+$testIt->ok(function_exists("saferFilename"), "Should have a saferFilename");
+
+echo "\tTesting testServerAssociativeArray: " .  testServerAssociativeArray($testIt) . PHP_EOL;
+echo "\tTesting testIsFilename: " . testIsFilename($testIt) . PHP_EOL;
+echo "\tTesting testAttributeCleaning: " . testAttributeCleaning($testIt) . PHP_EOL;
+echo "\tTesting testHREFCleaning: " . testHREFCleaning($testIt) . PHP_EOL;
+echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE($testIt) . PHP_EOL;
+echo "\tTesting testCleanScriptElements: " . testCleanScriptElements($testIt) . PHP_EOL;
+echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling($testIt) . PHP_EOL;
+echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes($testIt) . PHP_EOL;
+echo "\tTesting testHTMLQuoteHandling: " . testHTMLQuoteHandling($testIt) . PHP_EOL;
+echo "\tTesting testSelectMultiple: " . testSelectMultiple($testIt) . PHP_EOL;
+echo "\tTesting support functions: " . testSupportFunctions($testIt) . PHP_EOL;
+echo "\tTesting get processing: " . testGETProcessing($testIt) . PHP_EOL;
+echo "\tTesting post processing: " . testPOSTProcessing($testIt) . PHP_EOL;
+echo "\tTesting server processing: " . testSERVERProcessing($testIt) . PHP_EOL;
+echo "\tTesting safeStrToTime process: " . testSafeStrToTime($testIt) . PHP_EOL;
+echo "\tTesting Varname Lists process: " . testVarnameLists($testIt) . PHP_EOL;
+echo "\tTesting PRCE expressions process: " . testPRCEExpressions($testIt) . PHP_EOL;
+echo "\tTesting testSafeJSON: " . testSafeJSON($testIt) . PHP_EOL;
+echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization($testIt) . PHP_EOL;
+echo "\tTesting testUTF2HTML: " . testUTF2HTML($testIt) . PHP_EOL;
+echo "\tTesting testMakeAs: " . testMakeAs($testIt) . PHP_EOL;
+echo "\tTesting testEnforceDefaultsTrue: " . testEnforceDefaultsTrue($testIt) . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>
