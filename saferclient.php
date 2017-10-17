@@ -14,14 +14,12 @@
  *
  * This was based on David from Code2Design.com example at php.net
  */
-function saferHttpGet($base_url, array $get = array()) 
+function saferHttpGet($base_url, array $get = []) 
 {
     $options = array(
         CURLOPT_URL => $base_url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
-        CURLOPT_HEADER => 0,
         CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_FOLLOWLOCATION => TRUE,
-        CURLOPT_TIMEOUT => 10
     );
     $ch = curl_init();
     curl_setopt_array($ch, $options);
@@ -29,12 +27,13 @@ function saferHttpGet($base_url, array $get = array())
         "content" => "",
         "error" => ""
     );
-    if ( ! $content = curl_exec($ch))
+    $content = curl_exec($ch);
+    if ($errno = curl_errno($ch)) 
     {
-        $results["error"] = curl_error($ch);
-    } else {
-        $results["content"] = $content;
+        $results["error"] = curl_strerror($errno);
     }
+    $results["status"] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $results["content"] = $content;
     curl_close($ch);
     return $results;
     
@@ -53,10 +52,8 @@ function saferHttpPost($base_url, $post = [])
     $url = $base_url;
     $options = array(
         CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($post),
-        CURLOPT_HEADER => 0,
         CURLOPT_RETURNTRANSFER => TRUE,
-        CURLOPT_FOLLOWLOCATION => TRUE,
-        CURLOPT_TIMEOUT => 10
+        CURLOPT_FOLLOWLOCATION => TRUE
     );
 
     $ch = curl_init();
@@ -65,12 +62,13 @@ function saferHttpPost($base_url, $post = [])
         "content" => "",
         "error" => ""
     );
-    if ( ! $content = curl_exec($ch))
+    $content = curl_exec($ch);
+    if ($errno = curl_errno($ch)) 
     {
-        $results["error"] = curl_error($ch);
-    } else {
-        $results["content"] = $content;
+        $results["error"] = curl_strerror($errno);
     }
+    $results["status"] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $results["content"] = $content;
     curl_close($ch);
     return $results;
 }
