@@ -19,7 +19,7 @@ if ($response["error"] != "") {
 $lines = split($response["content"], "\n");
 $i = 0;
 foreach ($lines as $line) {
-    if (strpos("<b>Notice</b>") !== FALSE) {
+    if (strpos($line, "<b>Notice</b>") !== FALSE) {
        echo "NOTICE: $line"; 
        $i++;
     }
@@ -42,7 +42,7 @@ if ($response["error"] != "") {
 $lines = split($response["content"], "\n");
 $i = 0;
 foreach ($lines as $line) {
-    if (strpos("<b>Notice</b>") !== FALSE) {
+    if (strpos($line, "<b>Notice</b>") !== FALSE) {
        echo "NOTICE: $line"; 
        $i++;
     }

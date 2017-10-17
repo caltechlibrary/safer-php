@@ -48,11 +48,11 @@ function saferHttpGet($base_url, array $get = array())
  *
  * This was based on David from Code2Design.com example at php.net
  */
-function saferHttpPost($base_url, array $post = {})
+function saferHttpPost($base_url, $post = [])
 {
     $url = $base_url;
-    $defaults = array(
-        CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
+    $options = array(
+        CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($post),
         CURLOPT_HEADER => 0,
         CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_FOLLOWLOCATION => TRUE,
