@@ -21,7 +21,7 @@ $i = 0;
 foreach ($lines as $line) {
     if (strpos("<b>Notice</b>") !== FALSE) {
        echo "NOTICE: $line"; 
-       $i++
+       $i++;
     }
 }
 if ($i > 0) {
@@ -44,7 +44,7 @@ $i = 0;
 foreach ($lines as $line) {
     if (strpos("<b>Notice</b>") !== FALSE) {
        echo "NOTICE: $line"; 
-       $i++
+       $i++;
     }
 }
 if ($i > 0) {
