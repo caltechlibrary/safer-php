@@ -47,15 +47,20 @@ function saferHttpGet($base_url, array $get = [])
  *
  * This was based on David from Code2Design.com example at php.net
  */
-function saferHttpPost($base_url, $post = [])
+function saferHttpPost($base_url, $post = array())
 {
     $url = $base_url;
     $options = array(
-        CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($post),
+        CURLOPT_POST => 1,
+        CURLOPT_FRESH_CONNECT => 1,
+        CURLOPT_FORBID_REUSE => 1,
+        CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => TRUE,
-        CURLOPT_FOLLOWLOCATION => TRUE
+        CURLOPT_FOLLOWLOCATION => TRUE,
+        CURLOPT_POSTFIELDS => http_build_query($post)
     );
 
+        //. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($post),
     $ch = curl_init();
     curl_setopt_array($ch, $options);
     $results = array(

@@ -58,7 +58,6 @@ function PHPFileList($p) {
 
 // TestPHPFileList() is an example function for testing PHPFileList()
 function TestPHPFileList() {
-  echo "Run this from the base repo directory: php example_testing/TestRunner.php" . PHP_EOL;
   $l1 = PHPFileList(".");
   if (count($l1) !== 10) {
     echo "Expected 10 entries, got " . (count($l1)) . PHP_EOL;
@@ -67,15 +66,14 @@ function TestPHPFileList() {
   }
 
   $l2 = PHPFileList("example_testing");
-  if (count($l2) !== 3) {
-    echo "Expected 3 entries, got " . (count($l2)) . PHP_EOL;
+  if (count($l2) !== 2) {
+    echo "Expected 2 entries, got " . (count($l2)) . PHP_EOL;
     echo "    " . print_r($l2, true) . PHP_EOL;
     foreach (listdir("example_testing") as $line) {
       echo $line . PHP_EOL;
     }
     exit(1);
   }
-  echo "Success!" . PHP_EOL;
 }
 
 
@@ -96,12 +94,16 @@ function TestRunner($thisFilename, $args) {
   }
 }
 
-if (count($argv) > 1) {
+if (isset($argv) && count($argv) > 1) {
+    // array is a FIFO so we use shift instead of pop
     $thisFilename = realpath(array_shift($argv));
     echo "Running ". basename($thisFilename) . PHP_EOL;
     TestRunner($thisFilename, $argv);
+    echo "Tests completed." . PHP_EOL;
 } else {
-    echo "Testing the PHPFileList() function" . PHP_EOL;
-    TestPHPFileList();
+    //echo "Testing the PHPFileList() function" . PHP_EOL;
+    //TestPHPFileList();
+    //echo "Success!" . PHP_EOL;
+    echo "USAGE: php TestRunner.php PATH_TO_TESTS_YOU_WANT_TO_RUN" . PHP_EOL;
 }
 ?>
