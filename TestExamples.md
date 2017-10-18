@@ -1,14 +1,14 @@
 
 # Test Examples
 
-Included with _safer-php_ is _saferclient.php_ and _TestRunner.php_ and a _demotest_ htdocs root.
+Included with _safer-php_ is _saferclient.php_ and _TestRunner.php_ and a _demo-htdocs_ htdocs root.
 To run a _TestRunner.php_ demo try the following from two Bash shells.
 
 
 From the first shell run
 
 ```shell
-    php -S localhost:8000 -t demotest
+    php -S localhost:8000 -t demo-htdocs
 ```
 
 From the second run
