@@ -32,5 +32,4 @@ release:
 	mkdir -p $(DIST_DIR)
 	cp -v *.md $(DIST_DIR)
 	cp -v *.php $(DIST_DIR)/
-	cp -vR examples $(DIST_DIR)/
 	zip -r $(PROJECT)-$(VERSION)-release.zip $(DIST_DIR)/

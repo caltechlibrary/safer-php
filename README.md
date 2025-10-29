@@ -1,3 +1,7 @@
+
+NOTE: This is a legacy project used when porting some legacy code. You should use it
+in new projects. PHP 8 and above have better solutions. RSD 2025-10-29
+
 # safer-php
 
 A tiny input vetting library for legacy PHP code.  Also includes examples
